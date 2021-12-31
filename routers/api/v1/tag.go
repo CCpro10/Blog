@@ -14,7 +14,7 @@ import (
 
 //获取文章标签,根据name和state的query获取一个或多个值
 func GetTags(c *gin.Context) {
-		//maps为查询的条件
+	//maps为查询的条件
 	maps := make(map[string]interface{})
 	//data为返回的数据
 	data := make(map[string]interface{})
@@ -24,7 +24,7 @@ func GetTags(c *gin.Context) {
 		maps["name"] = name
 	}
 
-	var state  = -1
+	var state = -1
 	if arg := c.Query("state"); arg != "" {
 		state = com.StrTo(arg).MustInt()
 		maps["state"] = state
@@ -36,12 +36,19 @@ func GetTags(c *gin.Context) {
 	data["total"] = models.GetTagTotal(maps)
 
 	c.JSON(http.StatusOK, gin.H{
-		"code" : code,
-		"msg" : e.GetMsg(code),
-		"data" : data,
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": data,
 	})
 }
 
+// @Summary 新增文章标签
+// @Produce  json
+// @Param name query string true "Name"
+// @Param state query int false "State"
+// @Param created_by query string false "CreatedBy"
+// @Success 200 {string} json "{"code":200,"data":{},"msg":"ok"}"
+// @Router /api/v1/tags [post]
 //新增文章标签
 func AddTag(c *gin.Context) {
 	name := c.Query("name")
@@ -59,9 +66,9 @@ func AddTag(c *gin.Context) {
 
 	code := e.INVALID_PARAMS
 	//如果表单验证没有错误
-	if ! valid.HasErrors() {
+	if !valid.HasErrors() {
 		//如果名称在表中不存在
-		if ! models.ExistTagByName(name) {
+		if !models.ExistTagByName(name) {
 			code = e.SUCCESS
 			models.AddTag(name, state, createdBy)
 		} else {
@@ -70,12 +77,20 @@ func AddTag(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code" : code,
-		"msg" : e.GetMsg(code),
-		"data" : make(map[string]string),
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": make(map[string]string),
 	})
 }
 
+// @Summary 修改文章标签
+// @Produce  json
+// @Param id path int true "ID"
+// @Param name query string true "ID"
+// @Param state query int false "State"
+// @Param modified_by query string true "ModifiedBy"
+// @Success 200 {string} json "{"code":200,"data":{},"msg":"ok"}"
+// @Router /api/v1/tags/{id} [put]
 //修改文章标签
 func EditTag(c *gin.Context) {
 	//获取参数
@@ -85,7 +100,7 @@ func EditTag(c *gin.Context) {
 
 	valid := validation.Validation{}
 
-	var state int = -1  //若无state参数,则state为-1,即为空
+	var state int = -1 //若无state参数,则state为-1,即为空
 	if arg := c.Query("state"); arg != "" {
 		state = com.StrTo(arg).MustInt()
 		valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
@@ -97,7 +112,7 @@ func EditTag(c *gin.Context) {
 	valid.MaxSize(name, 100, "name").Message("名称最长为100字符")
 
 	code := e.INVALID_PARAMS
-	if ! valid.HasErrors() {
+	if !valid.HasErrors() {
 		code = e.SUCCESS
 		if models.ExistTagByID(id) {
 			data := make(map[string]interface{})
@@ -105,7 +120,7 @@ func EditTag(c *gin.Context) {
 			if name != "" {
 				data["name"] = name
 			}
-			if state != -1 {//若state为空,则state不作为data中的修改条件,默认为0
+			if state != -1 { //若state为空,则state不作为data中的修改条件,默认为0
 				data["state"] = state
 			}
 			log.Println(data)
@@ -116,9 +131,9 @@ func EditTag(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code" : code,
-		"msg" : e.GetMsg(code),
-		"data" : make(map[string]string),
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": make(map[string]string),
 	})
 }
 
@@ -130,7 +145,7 @@ func DeleteTag(c *gin.Context) {
 	valid.Min(id, 1, "id").Message("ID必须大于0")
 
 	code := e.INVALID_PARAMS
-	if ! valid.HasErrors() {
+	if !valid.HasErrors() {
 		code = e.SUCCESS
 		if models.ExistTagByID(id) {
 			models.DeleteTag(id)
@@ -140,10 +155,8 @@ func DeleteTag(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code" : code,
-		"msg" : e.GetMsg(code),
-		"data" : make(map[string]string),
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": make(map[string]string),
 	})
 }
-
-

@@ -1,12 +1,14 @@
 package routers
 
 import (
+	_ "Blog/docs"
 	"Blog/middleware"
 	"Blog/pkg/setting"
 	"Blog/routers/api"
-	 "Blog/routers/api/v1"
+	"Blog/routers/api/v1"
 	"github.com/gin-gonic/gin"
-
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func InitRouter() *gin.Engine {
@@ -43,6 +45,7 @@ func InitRouter() *gin.Engine {
 		//删除指定文章
 		apiv1.DELETE("/articles/:id", v1.DeleteArticle)
 	}
-
+	//docs.SwaggerInfo.BasePath = "/api/v1"
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	return r
 }
