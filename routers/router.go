@@ -1,7 +1,7 @@
 package routers
 
 import (
-	_ "Blog/docs"
+	_ "Blog/docs" //必需
 	"Blog/middleware"
 	"Blog/pkg/setting"
 	"Blog/routers/api"
@@ -19,6 +19,9 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Recovery())
 	//设置gin模式
 	gin.SetMode(setting.RunMode)
+
+	//docs.SwaggerInfo.BasePath = "/api/v1"
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	r.GET("/auth", api.GetAuth)
 
@@ -45,7 +48,6 @@ func InitRouter() *gin.Engine {
 		//删除指定文章
 		apiv1.DELETE("/articles/:id", v1.DeleteArticle)
 	}
-	//docs.SwaggerInfo.BasePath = "/api/v1"
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
 	return r
 }
