@@ -44,9 +44,9 @@ func GetTags(c *gin.Context) {
 
 // @Summary 新增文章标签
 // @Produce  json
-// @Param name query string true "Name"
-// @Param state query int false "State"
-// @Param created_by query string false "CreatedBy"
+// @Param name query string true "姓名"
+// @Param state query int false "tag状态"
+// @Param created_by query string false "创造人"
 // @Success 200 {string} json "{"code":200,"data":{},"msg":"ok"}"
 // @Router /api/v1/tags [post]
 //新增文章标签
